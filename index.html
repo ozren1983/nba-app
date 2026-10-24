@@ -6,7 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="NBA Cards">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#D9A468" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#2A1E16" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="apple-touch-icon.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
@@ -238,8 +239,10 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
 .foot{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px;text-align:center;color:var(--ink-soft);font-weight:500}
 .foot p{margin:0}
 
-/* solid strip under the iOS status bar (home-screen app), so the system blur there has nothing to smear */
-.safe-top{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--floor);z-index:5}
+/* Solid full-width strip pinned to the top edge. iOS 26+ colours the status bar from a fixed element
+   at the top (it must be at least 6px tall); without one it samples the transparent court layer and
+   shows the page smeared under a blur. */
+.safe-top{position:fixed;top:0;left:0;right:0;height:max(8px,env(safe-area-inset-top,0px));background:var(--floor);z-index:5}
 
 /* team logos: pinned inside their box so they scale to its width and height */
 .window,.dot,.sym{position:relative}
