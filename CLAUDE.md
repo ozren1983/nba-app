@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-"Liam's NBA Cards" — a kid-friendly web app for learning NBA teams (flip through team cards, then take a quiz). It is a single self-contained `index.html`: inline CSS, inline vanilla JS (ES5-style IIFE), and embedded audio. There is no build step, package manager, linter or test suite.
+"Liam's NBA Cards" — a kid-friendly web app for learning NBA teams (flip through team cards, then take a quiz). Almost everything is in `index.html`: inline CSS, inline vanilla JS (ES5-style IIFE), and embedded audio. Alongside it are `logos/` (official team logo SVGs, from `https://cdn.nba.com/logos/nba/<NBA team id>/primary/L/logo.svg`) and `apple-touch-icon.png` (the iPad/iPhone home-screen icon, also used as the favicon). There is no build step, package manager, linter or test suite.
 
 **Live site:** https://ozren1983.github.io/nba-app/ — served by GitHub Pages straight from the root of `main` (legacy build), so every push to `main` deploys.
 
@@ -16,15 +16,17 @@ Because `main` is the live site, do work on a branch and merge to `main` only af
 
 ## Working with index.html
 
-The file is ~1.5 MB because **line 390 is a single ~1.47 MB line**: `<script type="application/json" id="voiceData">`, a JSON map of phrase → `data:audio/mpeg;base64,...`. Never read or print that line whole; read the file in ranges that skip it (CSS ≈ lines 14–257, markup ≈ 259–388, app script ≈ 391–end), and edit with targeted string replacements.
+The file is ~1.5 MB because **one line is ~1.47 MB**: `<script type="application/json" id="voiceData">`, a JSON map of phrase → `data:audio/mpeg;base64,...`, sitting just before the app `<script>` (line 394 at the time of writing; find it with `grep -n voiceData index.html`). Never read or print that line whole; read the file in ranges that skip it (CSS, then markup, then the app script after it), and edit with targeted string replacements.
 
 ## Architecture
 
-- **Team data**: the `TEAMS` array at the top of the app script is the single source of truth. Each entry carries names, city, country/flag, an emoji `sym` plus its spoken `symWord`, card colors (`bg`/`fg`/`edge`, applied as `--t-bg`/`--t-fg`/`--t-edge` CSS vars via `teamVars`), palette `colors`, and the kid-level `means` explanation. Shelf, cards, quiz and the pictures screen are all generated from it.
+- **Team data**: the `TEAMS` array at the top of the app script is the single source of truth. Each entry carries names, city, country/flag, a `logo` path, an emoji `sym` that shows what the name means (with its spoken `symWord`), card colors (`bg`/`fg`/`edge`, applied as `--t-bg`/`--t-fg`/`--t-edge` CSS vars via `teamVars`), palette `colors`, and the kid-level `means` explanation with its Croatian translation `meansHr`. Shelf, cards, quiz and the pictures screen are all generated from it.
+- **Language (EN/HR)**: the header switch sets `state.lang`. Only the "Why <team>?" story is translated (`meaning(t)` picks `means` or `meansHr`); the heading and the rest of the UI, quiz and audio stay English. `renderLang()` syncs the switch and hides the story's read-aloud button in HR mode when the device has no Croatian voice.
+- **Team pictures**: `fillSym()` draws a team's picture on the card, shelf, quiz and pictures screen. A photo a grown-up uploaded wins, then the team logo, and the emoji appears only if the logo file fails to load. The emoji is always shown in the "Why <team>?" panel. `picWord()` picks what to say or label for a picture: the full team name for a logo or photo, `symWord` for an emoji.
 - **Modes**: `setMode()` toggles three `<section>`s — `learn` (cards), `quiz`, and `pics` (a grown-up screen for replacing team emojis with uploaded photos). One shared `state` object holds mode, card index, sound flag and the current quiz round.
 - **Quiz**: `buildRound()` makes `ROUND_LEN` (8) questions: `ROUND_LEN - 1` distinct teams across the `cityToTeam` / `teamToCity` / `findTeam` types, plus one `makeCountryQ()` question about the first non-USA team (currently Raptors/Canada). It reshuffles so the same answer never appears twice in a row. A star is earned only when the first try is correct.
-- **Sound**: `say(text)` looks up the exact string in the `voiceData` map and plays the pre-recorded clip; if there is no clip it falls back to the browser's `speechSynthesis`. `chime()` is a WebAudio tone for correct answers. The UI elements marked `.needs-speech` are hidden when neither audio path exists.
-- **Persistence**: `localStorage`, keys prefixed `liamNba.` (`sound`, `idx`, `best`, `pic.<nick>`). Uploaded pictures are downscaled to ≤320px PNG data URLs before they are stored. All storage access is wrapped in try/catch.
+- **Sound**: `say(text, lang)` looks up the exact string in the `voiceData` map and plays the pre-recorded clip; if there is no clip it falls back to the browser's `speechSynthesis` (an en-US voice, or a hr voice for `lang` `"hr"`). There are no Croatian recordings, so Croatian stories are always read by the browser's voice. `chime()` is a WebAudio tone for correct answers. The UI elements marked `.needs-speech` are hidden when neither audio path exists.
+- **Persistence**: `localStorage`, keys prefixed `liamNba.` (`sound`, `lang`, `idx`, `best`, `pic.<nick>`). A home-screen web app on iOS gets storage separate from Safari's, so these values don't carry over between the two. Uploaded pictures are downscaled to ≤320px PNG data URLs before they are stored. All storage access is wrapped in try/catch.
 - **`window.claude.hot`**: the app began as a Claude artifact, and boot hooks into `hot.snapshot`/`hot.ready` when that object exists. On GitHub Pages it doesn't exist, so `boot({})` runs. Keep the fallback working.
 
 ## Gotchas when changing content

@@ -4,6 +4,10 @@ A kid-friendly app for learning NBA teams: flip through team cards, then take a 
 
 **Play it:** https://ozren1983.github.io/nba-app/
 
+## Install on iPad or iPhone
+
+Open the link in Safari, tap the Share button, then **Add to Home Screen**. It gets a basketball icon named "NBA Cards" and opens full screen like an app.
+
 ## Run locally
 
 The whole app is a single `index.html` with no build step.

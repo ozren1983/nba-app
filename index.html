@@ -6,6 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="NBA Cards">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="apple-touch-icon.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Liam's NBA Cards</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -95,6 +97,10 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
   font:600 1rem var(--font-ui);cursor:pointer;box-shadow:var(--shadow);
 }
 .sound svg{width:24px;height:24px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.lang{display:flex;gap:4px;padding:5px;background:var(--panel);border-radius:999px;box-shadow:var(--shadow)}
+.lang-btn{min-width:46px;min-height:38px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:var(--panel-ink);font:600 1rem var(--font-ui);letter-spacing:.04em;cursor:pointer}
+.lang-btn[aria-pressed="true"]{background:var(--ball);color:var(--ball-ink)}
 
 /* mode tabs */
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:6px;background:var(--panel);border-radius:999px;box-shadow:var(--shadow);width:100%;max-width:440px;margin-inline:auto}
@@ -154,6 +160,7 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
 .page-num{font-family:var(--font-display);font-size:1.6rem;min-width:4.5ch;text-align:center;font-variant-numeric:tabular-nums}
 .meaning{display:flex;align-items:center;gap:14px}
 .meaning-text{min-width:0;flex:1}
+.why-sym{flex:none;width:60px;height:60px;border:0;border-radius:50%;padding:0;display:grid;place-items:center;background:var(--panel-edge);font-size:2.2rem;line-height:1;cursor:pointer}
 .meaning-text p:last-child{margin:6px 0 0;font:500 1.3rem/1.4 var(--font-ui);max-width:36ch}
 
 .shelf-panel{display:flex;flex-direction:column;gap:12px}
@@ -229,10 +236,10 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
 .foot p{margin:0}
 .link-btn{background:none;border:0;padding:8px 12px;min-height:44px;color:var(--ink);font:600 1rem var(--font-ui);text-decoration:underline;text-underline-offset:4px;cursor:pointer}
 
-/* your own pictures */
-.window img{width:84%;height:84%;object-fit:contain}
-.dot img,.sym img,.window img{pointer-events:none;-webkit-user-drag:none}
-.dot img,.sym img{width:74%;height:74%;object-fit:contain}
+/* logos and your own pictures: pinned inside their box so they scale to its width and height */
+.window,.dot,.sym{position:relative}
+.window img,.dot img,.sym img{position:absolute;inset:0;margin:auto;width:84%;height:84%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}
+.dot img,.sym img{width:74%;height:74%}
 .dot.has-pic,.sym.has-pic{background:rgba(255,255,255,.96)}
 .pics{max-width:720px;margin-inline:auto;width:100%}
 .pics-panel{display:flex;flex-direction:column;gap:10px;padding:22px}
@@ -266,7 +273,13 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
       <svg viewBox="0 0 40 40" aria-hidden="true"><circle class="ball-fill" cx="20" cy="20" r="18"/><circle class="ball-line" cx="20" cy="20" r="18"/><path class="ball-line" d="M2 20h36M20 2v36M8 6.5c5.5 5 5.5 22 0 27M32 6.5c-5.5 5-5.5 22 0 27"/></svg>
       Liam's NBA Cards
     </h1>
-    <button class="sound needs-speech" id="soundBtn" type="button"></button>
+    <div class="top-actions">
+      <div class="lang" role="group" aria-label="Language">
+        <button class="lang-btn" type="button" data-lang="en" aria-pressed="true" aria-label="English">EN</button>
+        <button class="lang-btn" type="button" data-lang="hr" aria-pressed="false" aria-label="Hrvatski">HR</button>
+      </div>
+      <button class="sound needs-speech" id="soundBtn" type="button"></button>
+    </div>
   </header>
 
   <nav class="tabs" aria-label="Mode">
@@ -311,6 +324,7 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
         </div>
 
         <div class="panel meaning">
+          <button class="why-sym" id="mSym" type="button"></button>
           <div class="meaning-text">
             <p class="eyebrow" id="mHead">Why Bulls?</p>
             <p id="mText"></p>
@@ -373,7 +387,7 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
     <section id="pics" class="pics" aria-label="Team pictures" hidden>
       <div class="panel pics-panel">
         <h2 class="pics-title">Team pictures</h2>
-        <p class="pics-note">Choose a picture for any team. It replaces the picture on the cards, the team shelf and the quiz. Pictures are saved on this device only.</p>
+        <p class="pics-note">Choose a picture for any team. It replaces the team logo on the cards, the team shelf and the quiz. Pictures are saved on this device only.</p>
         <p class="pic-msg" id="picMsg" aria-live="polite"></p>
         <div id="picList"></div>
         <div class="pics-done"><button class="cta" id="picsDone" type="button">Done</button></div>
@@ -395,45 +409,53 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
   /* Team data. Colors are each team's official palette; the picture is what the team name means. */
   var TEAMS = [
     { nick:"Bulls", city:"Chicago", full:"Chicago Bulls", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
-      sym:"\u{1F402}", symWord:"A bull!",
+      logo:"logos/bulls.svg", sym:"\u{1F402}", symWord:"A bull!",
       bg:"#CE1141", fg:"#FFFFFF", edge:"#111111",
       colors:[["Red","#CE1141"],["Black","#000000"]],
-      means:"A bull is a big, strong animal with horns." },
+      means:"A bull is a big, strong animal with horns.",
+      meansHr:"Bik je velika, snažna životinja s rogovima." },
     { nick:"Lakers", city:"Los Angeles", full:"Los Angeles Lakers", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
-      sym:"\u{1F3DE}\u{FE0F}", symWord:"A lake!",
+      logo:"logos/lakers.svg", sym:"\u{1F3DE}\u{FE0F}", symWord:"A lake!",
       bg:"#552583", fg:"#FDB927", edge:"#FDB927",
       colors:[["Purple","#552583"],["Gold","#FDB927"]],
-      means:"Lakers live near lakes. The team started in Minnesota, a place with lots and lots of lakes." },
+      means:"Lakers live near lakes. The team started in Minnesota, a place with lots and lots of lakes.",
+      meansHr:"Lakersi žive blizu jezera. Momčad je nastala u Minnesoti, gdje ima puno, puno jezera." },
     { nick:"Raptors", city:"Toronto", full:"Toronto Raptors", country:"Canada", flag:"\u{1F1E8}\u{1F1E6}",
-      sym:"\u{1F996}", symWord:"A dinosaur!",
+      logo:"logos/raptors.svg", sym:"\u{1F996}", symWord:"A dinosaur!",
       bg:"#141414", fg:"#FFFFFF", edge:"#CE1141",
       colors:[["Red","#CE1141"],["Black","#000000"],["Silver","#A1A1A4"]],
-      means:"A raptor is a dinosaur. Toronto is in Canada, so the Raptors are the only team not from the USA." },
+      means:"A raptor is a dinosaur. Toronto is in Canada, so the Raptors are the only team not from the USA.",
+      meansHr:"Raptor je dinosaur. Toronto je u Kanadi, pa su Raptorsi jedina momčad koja nije iz SAD-a." },
     { nick:"Pacers", city:"Indianapolis", full:"Indiana Pacers", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
-      sym:"\u{1F3CE}\u{FE0F}", symWord:"A race car!",
+      logo:"logos/pacers.svg", sym:"\u{1F3CE}\u{FE0F}", symWord:"A race car!",
       bg:"#002D62", fg:"#FDBB30", edge:"#FDBB30",
       colors:[["Blue","#002D62"],["Gold","#FDBB30"]],
-      means:"A pace car drives at the front when a car race starts. Indianapolis has a famous car race, the Indy 500." },
+      means:"A pace car drives at the front when a car race starts. Indianapolis has a famous car race, the Indy 500.",
+      meansHr:"Pace car je auto koji vozi na čelu kad počne utrka automobila. Indianapolis ima poznatu utrku automobila, Indy 500." },
     { nick:"Hornets", city:"Charlotte", full:"Charlotte Hornets", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
-      sym:"\u{1F41D}", symWord:"A hornet! Bzzz!",
+      logo:"logos/hornets.svg", sym:"\u{1F41D}", symWord:"A hornet! Bzzz!",
       bg:"#00788C", fg:"#FFFFFF", edge:"#1D1160",
       colors:[["Teal","#00788C"],["Purple","#1D1160"]],
-      means:"A hornet is a big wasp. Bzzz!" },
+      means:"A hornet is a big wasp. Bzzz!",
+      meansHr:"Stršljen je velika osa. Bzzz!" },
     { nick:"Bucks", city:"Milwaukee", full:"Milwaukee Bucks", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
-      sym:"\u{1F98C}", symWord:"A deer!",
+      logo:"logos/bucks.svg", sym:"\u{1F98C}", symWord:"A deer!",
       bg:"#00471B", fg:"#EEE1C6", edge:"#EEE1C6",
       colors:[["Green","#00471B"],["Cream","#EEE1C6"],["Blue","#0077C0"]],
-      means:"A buck is a boy deer." },
+      means:"A buck is a boy deer.",
+      meansHr:"Buck je jelen mužjak." },
     { nick:"Warriors", city:"San Francisco", full:"Golden State Warriors", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
-      sym:"\u{1F6E1}\u{FE0F}", symWord:"A warrior's shield!",
+      logo:"logos/warriors.svg", sym:"\u{1F6E1}\u{FE0F}", symWord:"A warrior's shield!",
       bg:"#1D428A", fg:"#FFFFFF", edge:"#FFC72C",
       colors:[["Blue","#1D428A"],["Gold","#FFC72C"]],
-      means:"A warrior is a brave fighter. Golden State is a nickname for California, where San Francisco is." },
+      means:"A warrior is a brave fighter. Golden State is a nickname for California, where San Francisco is.",
+      meansHr:"Ratnik je hrabar borac. Golden State je nadimak za Kaliforniju, gdje je San Francisco." },
     { nick:"Celtics", city:"Boston", full:"Boston Celtics", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
-      sym:"\u{1F1EE}\u{1F1EA}", symWord:"The flag of Ireland!",
+      logo:"logos/celtics.svg", sym:"\u{1F1EE}\u{1F1EA}", symWord:"The flag of Ireland!",
       bg:"#007A33", fg:"#FFFFFF", edge:"#BA9653",
       colors:[["Green","#007A33"],["White","#FFFFFF"],["Gold","#BA9653"]],
-      means:"The Celts are people from places like Ireland. Lots of families in Boston came from Ireland." }
+      means:"The Celts are people from places like Ireland. Lots of families in Boston came from Ireland.",
+      meansHr:"Kelti su ljudi iz zemalja poput Irske. Mnogo obitelji u Bostonu došlo je iz Irske." }
   ];
   var ROUND_LEN = 8;
 
@@ -444,18 +466,19 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
     set: function(k, v){ try{ localStorage.setItem("liamNba." + k, JSON.stringify(v)); }catch(e){} }
   };
 
-  var state = { mode:"learn", idx:0, sound:store.get("sound", true), round:null, q:0, stars:0, best:store.get("best", 0) };
+  var state = { mode:"learn", idx:0, sound:store.get("sound", true), lang:store.get("lang", "en") === "hr" ? "hr" : "en",
+                round:null, q:0, stars:0, best:store.get("best", 0) };
 
   /* ---------- sound ----------
-     Every phrase is pre-recorded with a natural voice (voiceData).
-     The browser's own voice is only a fallback for anything not recorded. */
+     Every English phrase is pre-recorded with a natural voice (voiceData).
+     The browser's own voice is a fallback for anything not recorded, and reads the Croatian stories. */
   var AUDIO = {};
   try{ AUDIO = JSON.parse(document.getElementById("voiceData").textContent || "{}"); }catch(e){ AUDIO = {}; }
   var player = null;
   try{ player = new Audio(); player.preload = "auto"; }catch(e){ player = null; }
 
   var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
-  var voice = null;
+  var voice = null, voiceHr = null;
   function pickVoice(){
     if(!synth) return;
     try{
@@ -464,7 +487,10 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
       voice = us.find(function(v){ return /natural|neural|premium|enhanced/i.test(v.name); })
            || us.find(function(v){ return /Samantha|Google US English|Ava|Allison|Aaron|Nicky/i.test(v.name); })
            || us[0] || vs.find(function(v){ return /^en/i.test(v.lang); }) || null;
+      var hr = vs.filter(function(v){ return /^hr([-_]|$)/i.test(v.lang); });
+      voiceHr = hr.find(function(v){ return /natural|neural|premium|enhanced/i.test(v.name); }) || hr[0] || null;
     }catch(e){}
+    renderLang();
   }
   if(synth){
     pickVoice();
@@ -473,18 +499,20 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
   if(!synth && !(player && Object.keys(AUDIO).length)){
     document.documentElement.classList.add("no-speech");
   }
-  function speak(text){
+  function speak(text, lang){
     if(!synth) return;
     try{
       synth.cancel();
       var u = new SpeechSynthesisUtterance(text);
-      u.lang = "en-US";
-      if(voice) u.voice = voice;
+      var hr = lang === "hr";
+      u.lang = hr ? "hr-HR" : "en-US";
+      var v = hr ? voiceHr : voice;
+      if(v) u.voice = v;
       u.rate = 0.95; u.pitch = 1;
       synth.speak(u);
     }catch(e){}
   }
-  function say(text){
+  function say(text, lang){
     if(!state.sound || !text) return;
     var clip = AUDIO[text];
     if(clip && player){
@@ -497,7 +525,8 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
         return;
       }catch(e){}
     }
-    speak(text);
+    try{ if(player) player.pause(); }catch(e){}
+    speak(text, lang);
   }
   var actx = null;
   function chime(){
@@ -530,21 +559,29 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
     b.setAttribute("aria-label", state.sound ? "Sound on" : "Sound off");
   }
 
-  /* pictures a grown-up added on this device, keyed by team */
+  /* pictures a grown-up added on this device, keyed by team; they win over the team logo,
+     and the emoji is only a fallback if the logo file can't load */
   var pics = {};
   function key(t){ return t.nick.toLowerCase(); }
   function fillSym(el, t){
     el.textContent = "";
-    var src = pics[key(t)];
+    var src = pics[key(t)] || t.logo;
     el.classList.toggle("has-pic", !!src);
     if(src){
       var im = document.createElement("img");
       im.src = src; im.alt = ""; im.draggable = false;
+      im.onerror = function(){
+        if(im.parentNode !== el) return;
+        el.classList.remove("has-pic");
+        el.textContent = t.sym;
+      };
       el.appendChild(im);
     } else {
       el.textContent = t.sym;
     }
   }
+  /* what to say for a team's picture: a logo or photo is named, an emoji is described */
+  function picWord(t){ return (pics[key(t)] || t.logo) ? t.full : t.symWord; }
   function loadPics(){
     TEAMS.forEach(function(t){
       var v = store.get("pic." + key(t), null);
@@ -604,7 +641,7 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
     $("#cFlag").textContent = t.flag;
     $("#cCountry").textContent = t.country;
     fillSym($("#cSym"), t);
-    $("#cSym").setAttribute("aria-label", pics[key(t)] ? t.full : t.symWord);
+    $("#cSym").setAttribute("aria-label", picWord(t));
     $("#cName").textContent = t.nick.toUpperCase();
     $("#cCity").textContent = t.city.toUpperCase();
     var cols = $("#cColors");
@@ -617,8 +654,11 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
       s.addEventListener("click", function(){ if(!guard()) say(pair[0]); });
       cols.appendChild(s);
     });
+    $("#mSym").textContent = t.sym;
+    $("#mSym").setAttribute("aria-label", t.symWord);
     $("#mHead").textContent = "Why " + t.nick + "?";
-    $("#mText").textContent = t.means;
+    $("#mText").textContent = meaning(t);
+    $("#mText").lang = state.lang;
     $("#pageNum").textContent = (state.idx + 1) + " / " + TEAMS.length;
     Array.prototype.forEach.call(document.querySelectorAll(".chip"), function(ch, i){
       ch.setAttribute("aria-current", i === state.idx ? "true" : "false");
@@ -665,9 +705,10 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
   $("#cSym").addEventListener("click", function(){
     if(guard()) return;
     var t = TEAMS[state.idx];
-    say(pics[key(t)] ? t.full : t.symWord);
+    say(picWord(t));
   });
-  $("#mSay").addEventListener("click", function(){ say(TEAMS[state.idx].means); });
+  $("#mSym").addEventListener("click", function(){ say(TEAMS[state.idx].symWord); });
+  $("#mSay").addEventListener("click", function(){ say(meaning(TEAMS[state.idx]), state.lang); });
   $("#prevBtn").addEventListener("click", function(){ go(-1); });
   $("#nextCardBtn").addEventListener("click", function(){ go(1); });
 
@@ -768,7 +809,7 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
           lb.className = "label"; lb.textContent = t.nick.toUpperCase();
           b.appendChild(lb);
         }
-        b.setAttribute("aria-label", q.kind === "team" ? t.nick : t.symWord);
+        b.setAttribute("aria-label", q.kind === "team" ? t.nick : picWord(t));
       }
       b.addEventListener("click", function(){ answer(b, oi); });
       box.appendChild(b);
@@ -928,12 +969,33 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
     if(state.sound) say("Sound on!");
   });
 
+  /* ---------- language: only the "Why <team>?" story is translated ---------- */
+  function meaning(t){ return state.lang === "hr" ? t.meansHr : t.means; }
+  function renderLang(){
+    Array.prototype.forEach.call(document.querySelectorAll(".lang-btn"), function(b){
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === state.lang ? "true" : "false");
+    });
+    /* Croatian has no recordings; hide "read it to me" if this device has no Croatian voice */
+    $("#mSay").hidden = state.lang === "hr" && !voiceHr;
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".lang-btn"), function(b){
+    b.addEventListener("click", function(){
+      var l = b.getAttribute("data-lang");
+      if(l === state.lang) return;
+      state.lang = l;
+      store.set("lang", l);
+      renderLang();
+      renderCard(0);
+    });
+  });
+
   /* ---------- boot ---------- */
   function boot(data){
     data = data || {};
     var i = typeof data.idx === "number" ? data.idx : store.get("idx", 0);
     state.idx = (i >= 0 && i < TEAMS.length) ? i : 0;
     renderSound();
+    renderLang();
     $("#shelfHead").textContent = "All " + TEAMS.length + " teams";
     $("#foot").textContent = TEAMS.length + " of the 30 NBA teams so far. More teams coming.";
     loadPics();
