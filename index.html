@@ -6,13 +6,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="NBA Cards">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="apple-touch-icon.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Liam's NBA Cards</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Graduate&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500&family=Fredoka:wght@400;500;600;700&family=Graduate&display=swap" rel="stylesheet">
 <style>
 /* Layout: an arena floor with a center circle. One big trading card at a time, with pager, name story and team shelf beside it (stacked on narrow screens). The quiz reuses the floor: a prompt board and three big answer tiles. */
 :root{
@@ -160,8 +161,10 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
 .page-num{font-family:var(--font-display);font-size:1.6rem;min-width:4.5ch;text-align:center;font-variant-numeric:tabular-nums}
 .meaning{display:flex;align-items:center;gap:14px}
 .meaning-text{min-width:0;flex:1}
-.why-sym{flex:none;width:60px;height:60px;border:0;border-radius:50%;padding:0;display:grid;place-items:center;background:var(--panel-edge);font-size:2.2rem;line-height:1;cursor:pointer}
+.why-sym{flex:none;width:60px;height:60px;border:0;border-radius:50%;padding:0;display:grid;place-items:center;background:var(--panel-edge);box-shadow:inset 0 0 0 2px var(--panel-edge);font-size:2.2rem;line-height:1;cursor:pointer}
 .meaning-text p:last-child{margin:6px 0 0;font:500 1.3rem/1.4 var(--font-ui);max-width:36ch}
+/* Fredoka has no č, ć or đ, so the Croatian story uses a similar rounded font that does */
+#mText:lang(hr){font-family:"Baloo 2",var(--font-ui)}
 
 .shelf-panel{display:flex;flex-direction:column;gap:12px}
 .shelf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 8px}
@@ -234,29 +237,15 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
 
 .foot{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px;text-align:center;color:var(--ink-soft);font-weight:500}
 .foot p{margin:0}
-.link-btn{background:none;border:0;padding:8px 12px;min-height:44px;color:var(--ink);font:600 1rem var(--font-ui);text-decoration:underline;text-underline-offset:4px;cursor:pointer}
 
-/* logos and your own pictures: pinned inside their box so they scale to its width and height */
+/* solid strip under the iOS status bar (home-screen app), so the system blur there has nothing to smear */
+.safe-top{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--floor);z-index:5}
+
+/* team logos: pinned inside their box so they scale to its width and height */
 .window,.dot,.sym{position:relative}
 .window img,.dot img,.sym img{position:absolute;inset:0;margin:auto;width:84%;height:84%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}
 .dot img,.sym img{width:74%;height:74%}
 .dot.has-pic,.sym.has-pic{background:rgba(255,255,255,.96)}
-.pics{max-width:720px;margin-inline:auto;width:100%}
-.pics-panel{display:flex;flex-direction:column;gap:10px;padding:22px}
-.pics-title{margin:0;font-family:var(--font-display);font-weight:400;font-size:1.8rem;letter-spacing:.03em}
-.pics-note{margin:0;font-size:1.05rem;line-height:1.5;max-width:60ch;color:var(--panel-soft)}
-.pic-msg{margin:0;min-height:1.4em;font-weight:600}
-.pic-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:12px 0;border-top:1px solid var(--panel-edge)}
-.pic-row .dot{width:56px;aspect-ratio:1;border-radius:50%;background:var(--t-bg);border:3px solid var(--t-edge);display:grid;place-items:center;font-size:1.6rem;line-height:1}
-.pic-row .dot.has-pic{background:rgba(255,255,255,.96)}
-.pic-name{font-weight:600;font-size:1.1rem}
-.pic-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.small-btn{position:relative;display:inline-flex;align-items:center;min-height:44px;padding:8px 18px;border-radius:999px;border:2px solid var(--ball);background:transparent;color:var(--panel-ink);font:600 1rem var(--font-ui);cursor:pointer}
-.small-btn.primary{background:var(--ball);color:var(--ball-ink)}
-.small-btn:focus-within{outline:4px solid var(--ball);outline-offset:3px}
-.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none}
-.pics-done{display:flex;justify-content:center;margin-top:8px}
-@media (max-width:520px){.pic-actions{grid-column:1/-1;justify-content:flex-start}}
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -265,6 +254,7 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
 </head>
 <body>
 
+<div class="safe-top" aria-hidden="true"></div>
 <div class="court" aria-hidden="true"><div class="halfline"></div><div class="center"></div></div>
 
 <div class="wrap">
@@ -324,7 +314,7 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
         </div>
 
         <div class="panel meaning">
-          <button class="why-sym" id="mSym" type="button"></button>
+          <button class="why-sym sym" id="mSym" type="button"></button>
           <div class="meaning-text">
             <p class="eyebrow" id="mHead">Why Bulls?</p>
             <p id="mText"></p>
@@ -383,21 +373,10 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
         </div>
       </div>
     </section>
-    <!-- TEAM PICTURES (grown-ups) -->
-    <section id="pics" class="pics" aria-label="Team pictures" hidden>
-      <div class="panel pics-panel">
-        <h2 class="pics-title">Team pictures</h2>
-        <p class="pics-note">Choose a picture for any team. It replaces the team logo on the cards, the team shelf and the quiz. Pictures are saved on this device only.</p>
-        <p class="pic-msg" id="picMsg" aria-live="polite"></p>
-        <div id="picList"></div>
-        <div class="pics-done"><button class="cta" id="picsDone" type="button">Done</button></div>
-      </div>
-    </section>
   </main>
 
   <div class="foot">
     <p id="foot">More teams coming.</p>
-    <button class="link-btn" id="picsBtn" type="button">Team pictures</button>
   </div>
 </div>
 
@@ -406,7 +385,8 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
 (function(){
   "use strict";
 
-  /* Team data. Colors are each team's official palette; the picture is what the team name means. */
+  /* Team data. Colors are each team's official palette. The emoji shows what the team name means;
+     it is only displayed if the logo can't load. */
   var TEAMS = [
     { nick:"Bulls", city:"Chicago", full:"Chicago Bulls", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
       logo:"logos/bulls.svg", sym:"\u{1F402}", symWord:"A bull!",
@@ -559,13 +539,10 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
     b.setAttribute("aria-label", state.sound ? "Sound on" : "Sound off");
   }
 
-  /* pictures a grown-up added on this device, keyed by team; they win over the team logo,
-     and the emoji is only a fallback if the logo file can't load */
-  var pics = {};
-  function key(t){ return t.nick.toLowerCase(); }
+  /* a team's picture is its logo; the emoji is only a fallback if the logo file can't load */
   function fillSym(el, t){
     el.textContent = "";
-    var src = pics[key(t)] || t.logo;
+    var src = t.logo;
     el.classList.toggle("has-pic", !!src);
     if(src){
       var im = document.createElement("img");
@@ -580,35 +557,8 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
       el.textContent = t.sym;
     }
   }
-  /* what to say for a team's picture: a logo or photo is named, an emoji is described */
-  function picWord(t){ return (pics[key(t)] || t.logo) ? t.full : t.symWord; }
-  function loadPics(){
-    TEAMS.forEach(function(t){
-      var v = store.get("pic." + key(t), null);
-      if(typeof v === "string" && v.indexOf("data:image/") === 0) pics[key(t)] = v;
-    });
-  }
-  function readPicture(file){
-    return new Promise(function(resolve, reject){
-      if(!file || !/^image\//.test(file.type || "")){ reject(new Error("type")); return; }
-      var url = URL.createObjectURL(file);
-      var img = new Image();
-      img.onload = function(){
-        try{
-          var w = img.naturalWidth || 300, h = img.naturalHeight || 300;
-          var scale = Math.min(1, 320 / Math.max(w, h));
-          var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
-          var cv = document.createElement("canvas");
-          cv.width = cw; cv.height = ch;
-          cv.getContext("2d").drawImage(img, 0, 0, cw, ch);
-          URL.revokeObjectURL(url);
-          resolve(cv.toDataURL("image/png"));
-        }catch(e){ URL.revokeObjectURL(url); reject(e); }
-      };
-      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error("load")); };
-      img.src = url;
-    });
-  }
+  /* what to say for a team's picture: a logo is named, an emoji is described */
+  function picWord(t){ return t.logo ? t.full : t.symWord; }
 
   function teamVars(el, t){
     el.style.setProperty("--t-bg", t.bg);
@@ -654,8 +604,8 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
       s.addEventListener("click", function(){ if(!guard()) say(pair[0]); });
       cols.appendChild(s);
     });
-    $("#mSym").textContent = t.sym;
-    $("#mSym").setAttribute("aria-label", t.symWord);
+    fillSym($("#mSym"), t);
+    $("#mSym").setAttribute("aria-label", picWord(t));
     $("#mHead").textContent = "Why " + t.nick + "?";
     $("#mText").textContent = meaning(t);
     $("#mText").lang = state.lang;
@@ -707,7 +657,7 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
     var t = TEAMS[state.idx];
     say(picWord(t));
   });
-  $("#mSym").addEventListener("click", function(){ say(TEAMS[state.idx].symWord); });
+  $("#mSym").addEventListener("click", function(){ say(picWord(TEAMS[state.idx])); });
   $("#mSay").addEventListener("click", function(){ say(meaning(TEAMS[state.idx]), state.lang); });
   $("#prevBtn").addEventListener("click", function(){ go(-1); });
   $("#nextCardBtn").addEventListener("click", function(){ go(1); });
@@ -881,77 +831,13 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
   $("#againBtn").addEventListener("click", startQuiz);
   $("#toCardsBtn").addEventListener("click", function(){ setMode("learn"); });
 
-  /* ---------- team pictures (grown-ups) ---------- */
-  function renderPicsList(){
-    var box = $("#picList");
-    box.innerHTML = "";
-    TEAMS.forEach(function(t){
-      var k = key(t);
-      var row = document.createElement("div");
-      row.className = "pic-row";
-      var dot = document.createElement("span");
-      dot.className = "dot"; teamVars(dot, t); fillSym(dot, t);
-      var name = document.createElement("span");
-      name.className = "pic-name"; name.textContent = t.full;
-      var acts = document.createElement("div");
-      acts.className = "pic-actions";
-      var lab = document.createElement("label");
-      lab.className = "small-btn primary";
-      var inp = document.createElement("input");
-      inp.type = "file"; inp.accept = "image/*"; inp.id = "pic-" + k; inp.className = "vh";
-      inp.addEventListener("change", function(){
-        var f = inp.files && inp.files[0];
-        if(f) addPic(t, f);
-      });
-      lab.appendChild(inp);
-      lab.appendChild(document.createTextNode(pics[k] ? "Change" : "Choose"));
-      acts.appendChild(lab);
-      if(pics[k]){
-        var rm = document.createElement("button");
-        rm.type = "button"; rm.className = "small-btn"; rm.textContent = "Remove";
-        rm.addEventListener("click", function(){ removePic(t); });
-        acts.appendChild(rm);
-      }
-      row.appendChild(dot); row.appendChild(name); row.appendChild(acts);
-      box.appendChild(row);
-    });
-  }
-  function refreshPics(){ renderPicsList(); buildShelf(); renderCard(0); }
-  function addPic(t, file){
-    readPicture(file).then(function(url){
-      pics[key(t)] = url;
-      var kept = true;
-      try{ localStorage.setItem("liamNba.pic." + key(t), JSON.stringify(url)); }catch(e){ kept = false; }
-      $("#picMsg").textContent = kept
-        ? "Saved the " + t.nick + " picture."
-        : "The " + t.nick + " picture shows for now, but this browser won't keep it after the page closes.";
-      refreshPics();
-    }, function(){
-      $("#picMsg").textContent = "That file couldn't be opened as a picture. Try a PNG or JPG.";
-    });
-  }
-  function removePic(t){
-    delete pics[key(t)];
-    try{ localStorage.removeItem("liamNba.pic." + key(t)); }catch(e){}
-    $("#picMsg").textContent = "Removed the " + t.nick + " picture.";
-    refreshPics();
-  }
-  $("#picsBtn").addEventListener("click", function(){ setMode("pics"); });
-  $("#picsDone").addEventListener("click", function(){ setMode("learn"); });
-
   /* ---------- modes ---------- */
   function setMode(m){
     state.mode = m;
     $("#learn").hidden = m !== "learn";
     $("#quiz").hidden = m !== "quiz";
-    $("#pics").hidden = m !== "pics";
     $("#tabLearn").setAttribute("aria-pressed", m === "learn" ? "true" : "false");
     $("#tabQuiz").setAttribute("aria-pressed", m === "quiz" ? "true" : "false");
-    if(m === "pics"){
-      $("#picMsg").textContent = "";
-      renderPicsList();
-      try{ window.scrollTo(0, 0); }catch(e){}
-    }
     if(m === "quiz"){
       var finished = state.round && !$("#done").hidden;
       if(!state.round || finished) startQuiz();
@@ -998,7 +884,6 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
     renderLang();
     $("#shelfHead").textContent = "All " + TEAMS.length + " teams";
     $("#foot").textContent = TEAMS.length + " of the 30 NBA teams so far. More teams coming.";
-    loadPics();
     buildShelf();
     renderCard(0);
     if(data.mode === "quiz") setMode("quiz");
