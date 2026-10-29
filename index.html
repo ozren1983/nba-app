@@ -151,6 +151,9 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
 .colors{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
 #cColors{background:rgba(255,255,255,.94);padding:6px 10px;border-radius:999px;gap:8px}
 .card .swatch{width:32px;height:32px;border-radius:50%;background:var(--sw);box-shadow:inset 0 0 0 2px rgba(0,0,0,.18)}
+.card .titles{display:flex;align-items:center;gap:6px;min-height:44px;padding:2px 16px;border-radius:999px;background:rgba(255,255,255,.94);color:#1B1E3A;font:400 1.6rem/1 var(--font-display);font-variant-numeric:tabular-nums}
+.card .titles .cup{font-size:1.4rem}
+.card .titles.none .cup{filter:grayscale(1);opacity:.5}
 @media (max-width:440px){.sound span{display:none}.sound{padding:10px 12px}}
 
 .card.enter-next{animation:in-next .28s ease-out}
@@ -350,6 +353,7 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
           <span class="mini">home city</span>
           <button class="city" id="cCity" type="button"></button>
         </div>
+        <div class="colors"><span class="mini">championships</span><button class="titles" id="cTitles" type="button"></button></div>
         <div class="colors"><span class="mini">colors</span><span id="cColors" class="colors"></span></div>
       </article>
 
@@ -484,54 +488,63 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
   "use strict";
 
   /* Team data. Colors are each team's official palette. The emoji shows what the team name means;
-     it is only displayed if the logo can't load. */
+     it is only displayed if the logo can't load. titles lists the years of each NBA championship
+     (as of the 2026 Finals, won by the Knicks); add the year when one of these teams wins. */
   var TEAMS = [
     { nick:"Bulls", city:"Chicago", full:"Chicago Bulls", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
       logo:"logos/bulls.svg", sym:"\u{1F402}", symWord:"A bull!",
       bg:"#CE1141", fg:"#FFFFFF", edge:"#111111",
       colors:[["Red","#CE1141"],["Black","#000000"]],
+      titles:[1991,1992,1993,1996,1997,1998],
       means:"A bull is a big, strong animal with horns.",
       meansHr:"Bik je velika, snažna životinja s rogovima." },
     { nick:"Lakers", city:"Los Angeles", full:"Los Angeles Lakers", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
       logo:"logos/lakers.svg", sym:"\u{1F3DE}\u{FE0F}", symWord:"A lake!",
       bg:"#552583", fg:"#FDB927", edge:"#FDB927",
       colors:[["Purple","#552583"],["Gold","#FDB927"]],
+      titles:[1949,1950,1952,1953,1954,1972,1980,1982,1985,1987,1988,2000,2001,2002,2009,2010,2020],
       means:"Lakers live near lakes. The team started in Minnesota, a place with lots and lots of lakes.",
       meansHr:"Lakersi žive blizu jezera. Momčad je nastala u Minnesoti, gdje ima puno, puno jezera." },
     { nick:"Raptors", city:"Toronto", full:"Toronto Raptors", country:"Canada", flag:"\u{1F1E8}\u{1F1E6}",
       logo:"logos/raptors.svg", sym:"\u{1F996}", symWord:"A dinosaur!",
       bg:"#141414", fg:"#FFFFFF", edge:"#CE1141",
       colors:[["Red","#CE1141"],["Black","#000000"],["Silver","#A1A1A4"]],
+      titles:[2019],
       means:"A raptor is a dinosaur. Toronto is in Canada, so the Raptors are the only team not from the USA.",
       meansHr:"Raptor je dinosaur. Toronto je u Kanadi, pa su Raptorsi jedina momčad koja nije iz SAD-a." },
     { nick:"Pacers", city:"Indianapolis", full:"Indiana Pacers", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
       logo:"logos/pacers.svg", sym:"\u{1F3CE}\u{FE0F}", symWord:"A race car!",
       bg:"#002D62", fg:"#FDBB30", edge:"#FDBB30",
       colors:[["Blue","#002D62"],["Gold","#FDBB30"]],
+      titles:[],
       means:"A pace car drives at the front when a car race starts. Indianapolis has a famous car race, the Indy 500.",
       meansHr:"Pace car je auto koji vozi na čelu kad počne utrka automobila. Indianapolis ima poznatu utrku automobila, Indy 500." },
     { nick:"Hornets", city:"Charlotte", full:"Charlotte Hornets", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
       logo:"logos/hornets.svg", sym:"\u{1F41D}", symWord:"A hornet! Bzzz!",
       bg:"#00788C", fg:"#FFFFFF", edge:"#1D1160",
       colors:[["Teal","#00788C"],["Purple","#1D1160"]],
+      titles:[],
       means:"A hornet is a big wasp. Bzzz!",
       meansHr:"Stršljen je velika osa. Bzzz!" },
     { nick:"Bucks", city:"Milwaukee", full:"Milwaukee Bucks", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
       logo:"logos/bucks.svg", sym:"\u{1F98C}", symWord:"A deer!",
       bg:"#00471B", fg:"#EEE1C6", edge:"#EEE1C6",
       colors:[["Green","#00471B"],["Cream","#EEE1C6"],["Blue","#0077C0"]],
+      titles:[1971,2021],
       means:"A buck is a boy deer.",
       meansHr:"Buck je jelen mužjak." },
     { nick:"Warriors", city:"San Francisco", full:"Golden State Warriors", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
       logo:"logos/warriors.svg", sym:"\u{1F6E1}\u{FE0F}", symWord:"A warrior's shield!",
       bg:"#1D428A", fg:"#FFFFFF", edge:"#FFC72C",
       colors:[["Blue","#1D428A"],["Gold","#FFC72C"]],
+      titles:[1947,1956,1975,2015,2017,2018,2022],
       means:"A warrior is a brave fighter. Golden State is a nickname for California, where San Francisco is.",
       meansHr:"Ratnik je hrabar borac. Golden State je nadimak za Kaliforniju, gdje je San Francisco." },
     { nick:"Celtics", city:"Boston", full:"Boston Celtics", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
       logo:"logos/celtics.svg", sym:"\u{1F1EE}\u{1F1EA}", symWord:"The flag of Ireland!",
       bg:"#007A33", fg:"#FFFFFF", edge:"#BA9653",
       colors:[["Green","#007A33"],["White","#FFFFFF"],["Gold","#BA9653"]],
+      titles:[1957,1959,1960,1961,1962,1963,1964,1965,1966,1968,1969,1974,1976,1981,1984,1986,2008,2024],
       means:"The Celts are people from places like Ireland. Lots of families in Boston came from Ireland.",
       meansHr:"Kelti su ljudi iz zemalja poput Irske. Mnogo obitelji u Bostonu došlo je iz Irske." }
   ];
@@ -737,6 +750,12 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
   /* what to say for a team's picture: a logo is named, an emoji is described */
   function picWord(t){ return t.logo ? t.full : t.symWord; }
 
+  function titlesLine(t){
+    var n = t.titles.length;
+    if(!n) return "The " + t.nick + " have not won a championship yet.";
+    return "The " + t.nick + " won " + n + (n === 1 ? " championship!" : " championships!");
+  }
+
   function teamVars(el, t){
     el.style.setProperty("--t-bg", t.bg);
     el.style.setProperty("--t-fg", t.fg);
@@ -771,6 +790,11 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
     $("#cSym").setAttribute("aria-label", picWord(t));
     $("#cName").textContent = t.nick.toUpperCase();
     $("#cCity").textContent = t.city.toUpperCase();
+    var tb = $("#cTitles");
+    tb.innerHTML = '<span class="cup" aria-hidden="true">\u{1F3C6}</span><span></span>';
+    tb.lastChild.textContent = t.titles.length;
+    tb.classList.toggle("none", !t.titles.length);
+    tb.setAttribute("aria-label", titlesLine(t));
     var cols = $("#cColors");
     cols.innerHTML = "";
     t.colors.forEach(function(pair){
@@ -830,6 +854,7 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
   $("#cSay").addEventListener("click", function(){ if(!guard()) say(TEAMS[state.idx].full); });
   $("#cName").addEventListener("click", function(){ if(!guard()) say(TEAMS[state.idx].nick); });
   $("#cCity").addEventListener("click", function(){ if(!guard()) say(TEAMS[state.idx].city); });
+  $("#cTitles").addEventListener("click", function(){ if(!guard()) say(titlesLine(TEAMS[state.idx])); });
   $("#cSym").addEventListener("click", function(){
     if(guard()) return;
     var t = TEAMS[state.idx];
