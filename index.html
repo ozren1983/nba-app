@@ -546,7 +546,63 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
       colors:[["Green","#007A33"],["White","#FFFFFF"],["Gold","#BA9653"]],
       titles:[1957,1959,1960,1961,1962,1963,1964,1965,1966,1968,1969,1974,1976,1981,1984,1986,2008,2024],
       means:"The Celts are people from places like Ireland. Lots of families in Boston came from Ireland.",
-      meansHr:"Kelti su ljudi iz zemalja poput Irske. Mnogo obitelji u Bostonu došlo je iz Irske." }
+      meansHr:"Kelti su ljudi iz zemalja poput Irske. Mnogo obitelji u Bostonu došlo je iz Irske." },
+    { nick:"Cavaliers", city:"Cleveland", full:"Cleveland Cavaliers", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
+      logo:"logos/cavaliers.svg", sym:"\u{1F3C7}", symWord:"A rider on a horse!",
+      bg:"#860038", fg:"#FFFFFF", edge:"#FDBB30",
+      colors:[["Wine","#860038"],["Gold","#FDBB30"],["Navy","#041E42"]],
+      titles:[2016],
+      means:"A cavalier is a brave soldier who rides a horse. Fans in Cleveland picked the name.",
+      meansHr:"Cavalier je hrabar vojnik koji jaše konja. Ime su izabrali navijači u Clevelandu." },
+    { nick:"Knicks", city:"New York", full:"New York Knicks", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
+      logo:"logos/knicks.svg", sym:"\u{1FA73}", symWord:"Short pants!",
+      bg:"#006BB6", fg:"#FFFFFF", edge:"#F58426",
+      colors:[["Blue","#006BB6"],["Orange","#F58426"],["Silver","#BEC0C2"]],
+      titles:[1970,1973,2026],
+      means:"Knicks is short for knickerbockers: baggy pants that stop at the knee. Long ago, people in New York wore them.",
+      meansHr:"Knicks je skraćeno od knickerbockers: široke hlače do koljena. Davno su ih nosili ljudi u New Yorku." },
+    { nick:"Nuggets", city:"Denver", full:"Denver Nuggets", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
+      logo:"logos/nuggets.svg", sym:"\u{26CF}\u{FE0F}", symWord:"A pick for digging gold!",
+      bg:"#0E2240", fg:"#FEC524", edge:"#FEC524",
+      colors:[["Navy","#0E2240"],["Gold","#FEC524"],["Red","#8B2131"]],
+      titles:[2023],
+      means:"A nugget is a lump of gold. Long ago, people came to the mountains near Denver to dig for gold.",
+      meansHr:"Nugget je grumen zlata. Davno su ljudi dolazili u planine kraj Denvera kopati zlato." },
+    { nick:"Clippers", city:"Los Angeles", full:"LA Clippers", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
+      logo:"logos/clippers.svg", sym:"\u{26F5}", symWord:"A sailing ship!",
+      bg:"#12173F", fg:"#FFFFFF", edge:"#C8102E",
+      colors:[["Navy","#12173F"],["Red","#C8102E"],["Blue","#418FDE"]],
+      titles:[],
+      means:"A clipper is a fast sailing ship. The team got its name in San Diego, a city by the ocean with lots of ships.",
+      meansHr:"Clipper je brzi jedrenjak. Momčad je dobila ime u San Diegu, gradu uz ocean s puno brodova." },
+    { nick:"Pistons", city:"Detroit", full:"Detroit Pistons", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
+      logo:"logos/pistons.svg", sym:"\u{1F697}", symWord:"A car!",
+      bg:"#C8102E", fg:"#FFFFFF", edge:"#1D42BA",
+      colors:[["Red","#C8102E"],["Blue","#1D42BA"],["Gray","#BEC0C2"]],
+      titles:[1989,1990,2004],
+      means:"A piston is a part inside a car engine that moves up and down. Lots of cars are made in Detroit.",
+      meansHr:"Piston je klip, dio u motoru automobila koji se miče gore-dolje. U Detroitu se proizvodi puno automobila." },
+    { nick:"Magic", city:"Orlando", full:"Orlando Magic", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
+      logo:"logos/magic.svg", sym:"\u{1FA84}", symWord:"A magic wand!",
+      bg:"#0050B5", fg:"#FFFFFF", edge:"#000000",
+      colors:[["Blue","#0050B5"],["Black","#000000"],["Silver","#C4CED4"]],
+      titles:[],
+      means:"Orlando has big, magical theme parks, like Disney World, so the team is called the Magic.",
+      meansHr:"Orlando ima velike, čarobne zabavne parkove, poput Disney Worlda, pa se momčad zove Magic." },
+    { nick:"Mavericks", city:"Dallas", full:"Dallas Mavericks", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
+      logo:"logos/mavericks.svg", sym:"\u{1F40E}", symWord:"A horse!",
+      bg:"#00538C", fg:"#FFFFFF", edge:"#B8C4CA",
+      colors:[["Blue","#00538C"],["Navy","#002B5E"],["Silver","#B8C4CA"]],
+      titles:[2011],
+      means:"A maverick is someone who does things their own way. Dallas is in Texas, a place with lots of cowboys and horses.",
+      meansHr:"Maverick je netko tko radi stvari na svoj način. Dallas je u Teksasu, gdje ima puno kauboja i konja." },
+    { nick:"Heat", city:"Miami", full:"Miami Heat", country:"USA", flag:"\u{1F1FA}\u{1F1F8}",
+      logo:"logos/heat.svg", sym:"\u{1F525}", symWord:"Fire! So hot!",
+      bg:"#98002E", fg:"#FFFFFF", edge:"#F9A01B",
+      colors:[["Red","#98002E"],["Yellow","#F9A01B"],["Black","#000000"]],
+      titles:[2006,2012,2013],
+      means:"Heat means it is very hot. Miami is in Florida, where it is hot and sunny almost all year.",
+      meansHr:"Heat znači vrućina. Miami je na Floridi, gdje je vruće i sunčano gotovo cijele godine." }
   ];
   var ROUND_LEN = 8;
 
@@ -556,7 +612,8 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
      ended, and a missing list means never won. say respells hard names for the English voice; sayHr is
      read instead when the device has a Croatian voice. */
   var FLAG = { us:"\u{1F1FA}\u{1F1F8}", hr:"\u{1F1ED}\u{1F1F7}", si:"\u{1F1F8}\u{1F1EE}", gr:"\u{1F1EC}\u{1F1F7}",
-               it:"\u{1F1EE}\u{1F1F9}", es:"\u{1F1EA}\u{1F1F8}" };
+               it:"\u{1F1EE}\u{1F1F9}", es:"\u{1F1EA}\u{1F1F8}", rs:"\u{1F1F7}\u{1F1F8}", ca:"\u{1F1E8}\u{1F1E6}",
+               de:"\u{1F1E9}\u{1F1EA}" };
   var PLAYERS = {
     Bulls:[
       { name:"Michael Jordan", num:"23", flag:FLAG.us, good:["Scoring","Defense"], cm:198, kg:89,
@@ -620,6 +677,65 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
       { name:"Jayson Tatum", num:"0", flag:FLAG.us, good:["Scoring"], cm:203, kg:95,
         titles:[2024],
         clubs:["Boston Celtics"] }
+    ],
+    Cavaliers:[
+      { name:"LeBron James", num:"23", flag:FLAG.us, good:["Scoring","Passing"], cm:206, kg:113,
+        titles:[2012,2013,2016,2020], mvp:[2009,2010,2012,2013], scoring:[2008],
+        clubs:["Cleveland Cavaliers","Miami Heat","Los Angeles Lakers","Philadelphia 76ers"] },
+      { name:"Kyrie Irving", num:"2", flag:FLAG.us, say:"Kai-ree Irving", good:["Dribbling","Scoring"], cm:188, kg:88,
+        titles:[2016], threes:[2013],
+        clubs:["Cleveland Cavaliers","Boston Celtics","Brooklyn Nets","Dallas Mavericks"] }
+    ],
+    Knicks:[
+      { name:"Patrick Ewing", num:"33", flag:FLAG.us, good:["Blocks","Scoring"], cm:213, kg:108,
+        clubs:["New York Knicks","Seattle SuperSonics","Orlando Magic"] },
+      { name:"Jalen Brunson", num:"11", flag:FLAG.us, say:"Jaylen Brunson", good:["Scoring"], cm:188, kg:86,
+        titles:[2026],
+        clubs:["Dallas Mavericks","New York Knicks"] }
+    ],
+    Nuggets:[
+      { name:"Nikola Jokić", num:"15", flag:FLAG.rs, say:"Nikola Yo-kitch", sayHr:"Nikola Jokić",
+        good:["Passing","Rebounds"], cm:211, kg:128,
+        titles:[2023], mvp:[2021,2022,2024],
+        clubs:["Mega Basket " + FLAG.rs,"Denver Nuggets"] },
+      { name:"Jamal Murray", num:"27", flag:FLAG.ca, good:["Scoring","3 pointers"], cm:193, kg:97,
+        titles:[2023],
+        clubs:["Denver Nuggets"] }
+    ],
+    Clippers:[
+      { name:"Blake Griffin", num:"32", flag:FLAG.us, good:["Dunks"], cm:206, kg:113,
+        clubs:["LA Clippers","Detroit Pistons","Brooklyn Nets","Boston Celtics"] },
+      { name:"Ivica Zubac", num:"40", flag:FLAG.hr, say:"Eevitsa Zoobats", sayHr:"Ivica Zubac",
+        good:["Rebounds","Blocks"], cm:213, kg:108,
+        clubs:["Zrinjevac " + FLAG.hr,"Cibona " + FLAG.hr,"Gorica " + FLAG.hr,"Mega Leks " + FLAG.rs,"Los Angeles Lakers","LA Clippers","Indiana Pacers"] }
+    ],
+    Pistons:[
+      { name:"Isiah Thomas", num:"11", flag:FLAG.us, say:"Eye-zay-uh Thomas", good:["Passing","Scoring"], cm:185, kg:81,
+        titles:[1989,1990],
+        clubs:["Detroit Pistons"] },
+      { name:"Cade Cunningham", num:"2", flag:FLAG.us, good:["Passing","Scoring"], cm:198, kg:99,
+        clubs:["Detroit Pistons"] }
+    ],
+    Magic:[
+      { name:"Shaquille O'Neal", num:"32", flag:FLAG.us, good:["Dunks","Scoring"], cm:216, kg:147,
+        titles:[2000,2001,2002,2006], mvp:[2000], scoring:[1995,2000],
+        clubs:["Orlando Magic","Los Angeles Lakers","Miami Heat","Phoenix Suns","Cleveland Cavaliers","Boston Celtics"] },
+      { name:"Paolo Banchero", num:"5", flag:FLAG.us, say:"Paolo Ban-chair-oh", good:["Scoring"], cm:208, kg:113,
+        clubs:["Orlando Magic"] }
+    ],
+    Mavericks:[
+      { name:"Dirk Nowitzki", num:"41", flag:FLAG.de, say:"Dirk No-vit-skee", good:["Scoring","3 pointers"], cm:213, kg:111,
+        titles:[2011], mvp:[2007], threes:[2006],
+        clubs:["DJK Würzburg " + FLAG.de,"Dallas Mavericks"] },
+      { name:"Cooper Flagg", num:"32", flag:FLAG.us, good:["Defense","Scoring"], cm:206, kg:92,
+        clubs:["Dallas Mavericks"] }
+    ],
+    Heat:[
+      { name:"Dwyane Wade", num:"3", flag:FLAG.us, say:"Dwayne Wade", good:["Scoring","Defense"], cm:193, kg:99,
+        titles:[2006,2012,2013], scoring:[2009],
+        clubs:["Miami Heat","Chicago Bulls","Cleveland Cavaliers"] },
+      { name:"Bam Adebayo", num:"13", flag:FLAG.us, say:"Bam Adda-bye-oh", good:["Defense","Passing"], cm:206, kg:117,
+        clubs:["Miami Heat"] }
     ]
   };
   var AWARDS = [
@@ -974,8 +1090,14 @@ button:focus-visible{outline:4px solid var(--ball);outline-offset:3px}
     for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var tmp = a[i]; a[i] = a[j]; a[j] = tmp; }
     return a;
   }
+  /* wrong answers: n other teams whose cities differ from the answer's and from each other's. Lakers and
+     Clippers share Los Angeles, so without this a question could show Los Angeles twice or have two right answers. */
   function others(ti, n){
-    return shuffle(TEAMS.map(function(_, i){ return i; }).filter(function(i){ return i !== ti; })).slice(0, n);
+    var cities = [TEAMS[ti].city], out = [];
+    shuffle(TEAMS.map(function(_, i){ return i; })).forEach(function(i){
+      if(out.length < n && cities.indexOf(TEAMS[i].city) < 0){ out.push(i); cities.push(TEAMS[i].city); }
+    });
+    return out;
   }
   function makeQ(type, ti){
     var t = TEAMS[ti], opts = shuffle([ti].concat(others(ti, 2)));
