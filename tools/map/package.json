@@ -1,0 +1,14 @@
+{
+  "name": "nba-cards-map",
+  "private": true,
+  "description": "Builds the city map data in index.html from TEAMS. Run: npm install && node build.mjs",
+  "type": "module",
+  "dependencies": {
+    "d3-geo": "3.1.1",
+    "polylabel": "1.1.0",
+    "topojson-client": "3.1.0",
+    "topojson-simplify": "3.0.3",
+    "us-atlas": "3.0.1",
+    "world-atlas": "2.0.2"
+  }
+}
